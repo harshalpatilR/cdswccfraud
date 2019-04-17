@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 
-model = pickle.load(open("cc_model.pkl","rb"))
+model = pickle.load(open("cc_model_day_3.pkl","rb"))
 
 def predict(args):
   account=np.array(args["feature"].split(",")).reshape(1,-1)

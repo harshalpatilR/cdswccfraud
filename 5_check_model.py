@@ -42,6 +42,6 @@ ap = average_precision_score(y_test, predictions_rand)
 cdsw.track_metric("auroc", round(auroc,2))
 cdsw.track_metric("ap", round(ap,2))
 
-pickle.dump(randF, open("cc_model_checl.pkl","wb"))
+pickle.dump(randF, open("cc_model_check.pkl","wb"))
 
-cdsw.track_file("cc_model_checl.pkl")
+cdsw.track_file("cc_model_check.pkl")
