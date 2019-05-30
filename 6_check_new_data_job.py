@@ -8,6 +8,17 @@ import os
 import requests
 import json
 
+## Creating the Jobs
+# You need to create to jobs in the Jobs interface for this to work. The first job is called "Check Model"
+# This job uses this python file `6_check_new_data_jpb.py` and will evaluate the performance of the current 
+# model and if needed star the retrain process.
+# The second job is called is called "Retail Model" which uses the `8_retrain_model.py` file. The "Check Model" 
+# job launches the "Retrain Model" job using the REST API
+
+# You need to provide the details below which you can read about here: 
+# https://www.cloudera.com/documentation/data-science-workbench/latest/topics/cdsw_rest_apis.html
+# The JOB_ID is for the "Retrain Model" Job
+
 HOST = "http://" + os.environ['CDSW_DOMAIN']
 USERNAME = "jfletcher"
 API_KEY = "ubl2cr004czgh94dcz2t4dpjft03gpsh"
