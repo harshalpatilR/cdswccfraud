@@ -6,7 +6,11 @@ import pickle
 import cdsw
 import sys
 
-cc_data = pd.read_pickle("resources/credit_card_dataframe_final.pkl",compression="gzip")
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.appName("cc_fraud_demo").config("spark.kryoserializer.buffer.max.mb", "512").getOrCreate()
+import pandas as pd
+cc_data_spark = spark.read.parquet("credit_card_dataframe_spark")
+cc_data = cc_data_spark.toPandas()
 
 new_day = int(sys.argv[1])
 
