@@ -54,10 +54,11 @@ credit_card_dataframe_final = pd.concat(
   credit_card_dataframe_combined],axis=1
 )
 
-#credit_card_dataframe_final.to_pickle("resources/credit_card_dataframe_final.pkl",compression="gzip")
+credit_card_dataframe_final.to_pickle("resources/credit_card_dataframe_final.pkl",compression="gzip")
 
-credit_card_dataframe_spark = spark.createDataFrame(credit_card_dataframe_final)
+## To write the data as a Spark Data frame to the cluster, uncomment the following:
 
+#credit_card_dataframe_spark = spark.createDataFrame(credit_card_dataframe_final)
 #credit_card_dataframe_spark.write.parquet("credit_card_dataframe_final")
 
 
