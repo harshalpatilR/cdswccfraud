@@ -1,11 +1,8 @@
-### Part 2 Introduction
-# In this part of the project:
-# * `Using pandas to load and analyze the data`
-# * `Visulization with matplotlib and seaborn`
-# * `feature engineering`
-# * `inbalanced sample data`
-# * `Using sklearn to train a Logistic Regression Classification model`
-# * `Model tuning`
+### Data Analysis
+# This file will create a shareable analysis and visualisation of the credit card fraud data.
+# Most of this section was taken from the SE Specialization presentation done by my colleague 
+# Feng Lu 
+# [https://github.com/lufeng76/python/tree/master/credit-card-fraud](https://github.com/lufeng76/python/tree/master/credit-card-fraud)
 
 import numpy as np
 import pandas as pd
@@ -17,7 +14,7 @@ import seaborn as sns
 ## Load data
 data = pd.read_pickle("resources/credit_card_dataframe_final.pkl",compression="gzip")
 
-## Describe data
+### Describe the data
 # * the name of each column
 # * the number of values in each column
 # * the number of missing/NaN values in each column; 
@@ -46,11 +43,10 @@ fraud_count_n.plot.pie(title='Percentage of Fraud/Normal', \
 
 
 ## Generate two new columns 'Day' and 'Hour'
-# Since the column 'Time' is second, we need to  
-# add new column 'Hour', calculate by Hour = Time / 3600 % 24
-# data['Time'].apply(lambda x : int(x / 3600 % 24)).value_counts(sort=False)
+# Since the column 'Time' is in seconds, we need to  
+# add new column 'Hour' which is calculated by Hour = Time / 3600 % 24
 
-# However, transaction data is from two days. We need to 
+# The transaction data is from two days, therefore we need to 
 # calculate day and Hour  
 cal_hour = lambda x : int(x / 3600 % 24)
 cal_day  = lambda x : 'Day 1' if int(x/3600) > 23 else 'Day 2'
@@ -58,13 +54,13 @@ cal_day  = lambda x : 'Day 1' if int(x/3600) > 23 else 'Day 2'
 data['Day'] = data['Time'].apply(cal_day)
 data['Hour'] = data['Time'].apply(cal_hour)
 
-## Plot transaction freqence and amount
-# what we can see here is that busy time is from 9am to 10pm
+## Plot transaction frequency and amount
+# What we can see here is that busiest time is from 9am to 10pm
 data['Hour'].value_counts(sort=False)
 data['Hour'].value_counts(sort=False).plot.bar()
 
-# However, we don't know if Day make any difference
-# Plot transaction freqence by Day and Hour
+# We don't know if the Day makes any difference
+# Plot transaction frequency by Day and Hour
 grouped_count = data.groupby(['Hour','Day',])['Amount'].count().unstack()
 grouped_count.head()
 grouped_count.plot(title='Transaction Freq',style=['o-','v-'])
@@ -76,7 +72,7 @@ grouped_amount.head()
 grouped_amount.plot(title='Transaction Amount',style=['o-','v-'])
 grouped_amount.plot.bar(title='Transaction Amount',stacked=True)
 
-# Now, we want to know fraud transaction freqence and amount grouped 
+# We know want to know fraud transaction frequency and amount grouped 
 # by Day and Hour
 
 # Get the fraud only data
@@ -84,15 +80,15 @@ fraud = data[data['Class'] == 1]
 fraud[['Time','Amount','Class']].head()
 
 # What we found here is that a lot of fraud happed in both 2am and 11am
-# This is because people sleep on 2am, and spend lots of mony on 11am
+# This is because people sleep on 2am, and spend lots of money at 11am
 # It is difficult for people to find out the fraud at that time since they
-# are either in the dream or buy 
+# are either dreaming or shopping.
 f_grouped_count = fraud.groupby(['Hour','Day',])['Amount'].count().unstack()
 f_grouped_count.head()
 f_grouped_count.plot(title='Fraud Freq',style=['o-','v-'])
 f_grouped_count.plot.bar(title='Fraud Freq',stacked=True)
 
-# If we calculte the fraud dollar amount, almost same as frenqucy
+# We can calculate the fraud dollar amount which is almost the same as frenquency
 f_grouped_amount = fraud.groupby(['Hour','Day',])['Amount'].sum().unstack()
 f_grouped_amount.head()
 f_grouped_amount.plot(title='Fraud Amount',style=['o-','v-'])
@@ -100,7 +96,7 @@ f_grouped_amount.plot.bar(title='Fraud Amount',stacked=True)
 
 
 # Plot Fraud distribution by time
-# Fraud with more money intend to happed during the day time
+# Fraud with more money tends to happed during the day time
 def plot_fraud_dist(data):
   fig, axes = plt.subplots(2,1,sharex=True)
   fraud = data[data["Class"] == 1]
@@ -117,9 +113,9 @@ def plot_fraud_dist(data):
 
 plot_fraud_dist(data)
 
-## Divide amount into several group
-# What we found here is that most fraud is small by dollor value
-# People usually ignore the small money they spent
+## Divide amounts into several groups
+# What we found here is that most fraud has smaller dollor values
+# People usually ignore small amounts money they spend
 fraud = data[data['Class'] == 1].copy()
 fraud.head()
 fraud['Amount'].describe()
@@ -129,9 +125,9 @@ fraud.groupby('Cut')['Amount'].count().plot.bar()
 
 
 
-## check correlation among variables
-# Correlation Plot is not really important here 
-# as input data is already a PCA tranformation
+## Check correlation among variables
+# The correlation plot is not really important here 
+# as the input data is already gone through a PCA tranformation
 fraud = data[data['Class'] == 1]
 normal = data[data['Class'] == 1]
 
@@ -141,12 +137,12 @@ sns.heatmap(corr_fraud,cmap="BrBG",annot=False)
 corr_normal = normal.loc[:, ~fraud.columns.isin(['Class','Day'])].corr()
 sns.heatmap(corr_normal,cmap="BrBG",annot=False)
 
-## distplot for V1 and V28
-# What we oberse here is that the ditribution for varibles 
-# V8, V13,V15,V20,V22,V23,V25,V26,V27,V28 has no big  difference 
+## Distplot for V1 and V28
+# What we observe here is that the distribution for varibles 
+# V8,V13,V15,V20,V22,V23,V25,V26,V27,V28 have no significant influence 
 # between fraud and normal data set.
-# We may consider remove these variables during the feature selection phase
-features = data.iloc[:,1:29].columns
+# We can consider removing these variables during the feature selection phase
+features = data.iloc[:,3:29].columns
 plt.figure(figsize=(16,28*4))
 for i, cn in enumerate(data[features]):
     ax = plt.subplot()
@@ -155,38 +151,3 @@ for i, cn in enumerate(data[features]):
     ax.set_xlabel('')
     ax.set_title('histogram of feature: ' + str(cn))
     plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
