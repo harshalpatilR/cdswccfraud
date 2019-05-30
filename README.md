@@ -37,6 +37,15 @@ Deploy the trained model to CDSW to integrate with other internal systems.
 ## 5: Model Tuning
 Adjust the model hyper parameter values using an experiment to optimise the model.
 
+## 6: Model Monitoring via Jobs
+Checks the current state of model performance via the Jobs interface
+
+## 7: Model Monitoring via Experiments
+Checks the current state of model performance via the Experiments interface
+
+## 8: Model Retraining
+Called to retrain the model if there the job in 6 finds the model is below threshold
+
 _Note: For the model deployment, use the following JSON as the example input:_
 
 ```
