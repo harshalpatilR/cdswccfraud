@@ -6,11 +6,7 @@ import pickle
 import cdsw
 
 
-from pyspark.sql import SparkSession
-spark = SparkSession.builder.appName("cc_fraud_demo").config("spark.kryoserializer.buffer.max.mb", "512").getOrCreate()
-import pandas as pd
-cc_data_spark = spark.read.parquet("credit_card_dataframe_spark")
-cc_data = cc_data_spark.toPandas()
+cc_data = pd.read_pickle("resources/credit_card_dataframe_final.pkl",compression="gzip")
 
 X = cc_data[cc_data.Day < 4].iloc[:,3:len(cc_data.columns)-1]
 y = cc_data[cc_data.Day < 4].iloc[:,len(cc_data.columns)-1]
