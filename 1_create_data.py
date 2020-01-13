@@ -9,7 +9,7 @@ spark = SparkSession.builder.appName("cc_fraud_demo").getOrCreate()
 
 def data_randomizer(x):
     if x.name == 'Amount':
-        return round(x + (x*random.uniform(-1,1)*0.1),2)
+        return x + (x*random.uniform(-1,1)*0.1)
     else:
         return x + (x*random.uniform(-1,1)*0.1)
 
@@ -25,7 +25,6 @@ credit_card_dataframe_1.columns
 randomizeable_columns = ['V1', 'V2', 'V3', 'V4', 'V5', 'V6', 'V7', 'V8', 'V9', 'V10',
        'V11', 'V12', 'V13', 'V14', 'V15', 'V16', 'V17', 'V18', 'V19', 'V20',
        'V21', 'V22', 'V23', 'V24', 'V25', 'V26', 'V27', 'V28', 'Amount']
-
 
 credit_card_dataframe_2 = pd.concat(
   [credit_card_dataframe_1[['Time']].apply(lambda x: x + (172800*1)),
@@ -59,6 +58,6 @@ credit_card_dataframe_final.to_pickle("resources/credit_card_dataframe_final.pkl
 
 # Write to Spark for Experiments
 credit_card_dataframe_spark = spark.createDataFrame(credit_card_dataframe_final)
-credit_card_dataframe_spark.write.parquet("credit_card_dataframe_final")
+credit_card_dataframe_spark.write.parquet("credit_card_dataframe_final",mode="overwrite")
 
 

@@ -1,6 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score
-from sklearn.model_selection import train_test_split
+from sklearn.cross_validation import train_test_split
+#from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 import random
@@ -14,6 +15,12 @@ X = cc_data[cc_data.Day < 4].iloc[:,3:len(cc_data.columns)-1]
 y = cc_data[cc_data.Day < 4].iloc[:,len(cc_data.columns)-1]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+#print 5th row
+np.round(X_test.iloc[4,:].values,4)
+
+#.to_json()
+#y_test.iloc[4]
 
 # # Random Forest
 

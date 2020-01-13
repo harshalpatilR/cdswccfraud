@@ -1,6 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
+from sklearn.cross_validation import train_test_split
 import pandas as pd
 import pickle
 import cdsw
@@ -19,12 +20,20 @@ import json
 # https://www.cloudera.com/documentation/data-science-workbench/latest/topics/cdsw_rest_apis.html
 # The JOB_ID is for the "Retrain Model" Job
 
+#Retrain job link gives all details except API_key
+#https://cdsw.edh.cloudera.com/harshal/credit-card-fraud-detection/files/
+#https://cdsw.edh.cloudera.com/harshal/credit-card-fraud-detection/jobs/2253
 HOST = "http://" + os.environ['CDSW_DOMAIN']
-USERNAME = "jfletcher"
-API_KEY = "ubl2cr004czgh94dcz2t4dpjft03gpsh"
-PROJECT_NAME = "cc-fraud-demo-model-testing"
-JOB_ID = "10"
+USERNAME = "harshal"
+API_KEY = "ujcp6apyfy9n6lztif022lcynpw0cd3d"
+PROJECT_NAME = "credit-card-fraud-detection"
+JOB_ID = "2253"
 NEW_DAY = int(os.environ['DAY'])
+
+if NEW_DAY==1:
+  threshold=0.97
+else:
+  threshold=0.8
 
 url = "/".join([HOST, "api/v1/projects", USERNAME, PROJECT_NAME, "jobs", JOB_ID, "start"])
 job_params = {"DAY": str(NEW_DAY)}
@@ -50,7 +59,7 @@ ap = average_precision_score(y_test, predictions_rand)
 print("auroc =",auroc)
 print("ap =",ap)
 
-if auroc < 0.9:
+if auroc < threshold:
   print("model needs retraining")
   res = requests.post(
     url,

@@ -1,6 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, average_precision_score
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
+from sklearn.cross_validation import train_test_split
 import pandas as pd
 import pickle
 import cdsw
@@ -9,7 +10,7 @@ import cdsw
 from pyspark.sql import SparkSession
 spark = SparkSession.builder.appName("cc_fraud_demo").config("spark.kryoserializer.buffer.max.mb", "512").getOrCreate()
 import pandas as pd
-cc_data_spark = spark.read.parquet("credit_card_dataframe_spark")
+cc_data_spark = spark.read.parquet("credit_card_dataframe_final")
 cc_data = cc_data_spark.toPandas()
 
 X = cc_data[cc_data.Day < 4].iloc[:,3:len(cc_data.columns)-1]
@@ -23,6 +24,10 @@ param_numTrees = int(sys.argv[1])
 param_maxDepth = int(sys.argv[2])
 param_impurity = sys.argv[3]
 
+#test
+#param_numTrees = 5
+#param_maxDepth = 4
+#param_impurity = "gini"
 
 randF=RandomForestClassifier(
   n_jobs=10,
